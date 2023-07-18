@@ -19,6 +19,7 @@ const authUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
 });
+// Register
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -49,9 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // res.json({ msg: "Register User" });
 });
-const loginUser = asyncHandler(async (req, res) => {
-  res.json({ msg: "Login User" });
-});
+
 const logoutUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,
@@ -60,11 +59,50 @@ const logoutUser = asyncHandler(async (req, res) => {
   res.json({ msg: "User logged out" });
 });
 const getUserProfile = asyncHandler(async (req, res) => {
-  res.json({ msg: "Profile User" });
+  const user = {
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+  };
+
+  res.json({ user });
 });
 const updateUserProfile = asyncHandler(async (req, res) => {
-  res.json({ msg: "Update Profile User" });
+  const { name, email, password } = req.body;
+
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    if (password) {
+      user.password = password;
+    }
+
+    const userUpdated = await user.save();
+    res.json(userUpdated);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
+
+// const updateUserProfile = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     const { name, email, password } = req.body;
+//     const user = await User.findByIdAndUpdate(
+//       userId,
+//       { name, email, password },
+//       { new: true }
+//     );
+
+//     res.json({ msg: user });
+//   } catch (err) {
+//     return res.status(500).json({ msg: err.message });
+//   }
+// };
 
 // const userCtrl = {
 //   registerUser: async (req, res) => {
@@ -125,7 +163,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 export {
   authUser,
   registerUser,
-  loginUser,
   logoutUser,
   getUserProfile,
   updateUserProfile,
