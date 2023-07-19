@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node backend/server.js",
-    "client": "cd client && npm start",
+    "client": "npm run dev --prefix frontend",
     "server": "nodemon backend/server.js",
-    "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon backend/server.js\" \"npm run client\""
+    "dev": "concurrently -n 'server,client' -c 'red,green'  \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
