@@ -4,8 +4,6 @@ import { Container } from "react-bootstrap";
 import Header from "./components/Header";
 // import HomeScreen from "./screens/HomeScreen";
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
       <Header />
